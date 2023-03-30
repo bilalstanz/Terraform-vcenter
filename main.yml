@@ -1,0 +1,31 @@
+
+---
+  - hosts: all
+    remote_user: ubuntu
+    become: true
+    become_user: root
+    vars:
+      packages: {
+           bionic: /etc/netplan/50-cloud-init.yaml,
+           focal: /etc/netplan/00-installer-config.yaml
+          }
+
+    tasks:
+
+      - name: "use ip"
+        replace:
+          path: "{{ packages[ansible_distribution_release] }}"
+          regexp: "{{ old_ip }}"
+          replace: "{{ new_ip }}"
+
+      - name: "copy gitlab ssh key"
+        copy:
+          src: id_rsa
+          dest: /home/ubuntu/.ssh/id_rsa
+          owner: ubuntu
+          group: ubuntu
+          mode: '600'
+
+      - name: "reboot to populate new ip"
+        command: reboot
+        ignore_errors: yes
