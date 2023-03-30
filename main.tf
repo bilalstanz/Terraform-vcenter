@@ -59,3 +59,49 @@ provider "vsphere" {
   allow_unverified_ssl = true
 }
 
+
+
+
+
+data "vsphere_datacenter" "datacenter" {
+  name = "Indiqus"
+}
+
+data "vsphere_compute_cluster" "cluster" {
+  name          = "IQLAB1CLS1"
+  datacenter_id = data.vsphere_datacenter.datacenter.id
+}
+
+data "vsphere_host" "host" {
+  name          = "172.31.6.4"
+  # name          = "172.31.6.6"
+  datacenter_id = data.vsphere_datacenter.datacenter.id
+}
+
+data "vsphere_datastore" "datastore" {
+  name          = "SSD-DATA3"
+  # name          = "Host-5-OS-SSD"
+  datacenter_id = data.vsphere_datacenter.datacenter.id
+}
+
+data "vsphere_network" "network" {
+  name          = "Bilal"
+  # name          = "Vivek-229"
+  datacenter_id = data.vsphere_datacenter.datacenter.id
+}
+
+
+data "vsphere_virtual_machine" "template_u18" {
+  name          = "Bilal-ub18-template"
+  # name          = "Ubuntu-18-100GB-Fresh"
+  # name          = "Bilal-u18-.6.6-template"
+  datacenter_id = data.vsphere_datacenter.datacenter.id
+}
+
+data "vsphere_virtual_machine" "template_u20" {
+  name          = "Bilal-ub20-template"
+  datacenter_id = data.vsphere_datacenter.datacenter.id
+}
+
+
+
