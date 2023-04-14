@@ -24,6 +24,7 @@ locals {
   ip6 = "172.31.29.67"
   ip7 = "172.31.29.68"
   ip8 = "172.31.29.69"
+  ip9 = "172.31.29.70"
 
   octets1 = split(".", local.ip1)
   last_2_octets1 = join(".", slice(local.octets1, 2, 4))
@@ -48,6 +49,9 @@ locals {
 
   octets8 = split(".", local.ip8)
   last_2_octets8 = join(".", slice(local.octets8, 2, 4))
+
+  octets9 = split(".", local.ip9)
+  last_2_octets9 = join(".", slice(local.octets9, 2, 4))
 
 }
 
@@ -99,6 +103,11 @@ data "vsphere_virtual_machine" "template_u18" {
 
 data "vsphere_virtual_machine" "template_u20" {
   name          = "Bilal-ub20-template"
+  datacenter_id = data.vsphere_datacenter.datacenter.id
+}
+
+data "vsphere_virtual_machine" "ansible-ctrl_u20" {
+  name          = "Bilal-Ansible-ctrl-template"
   datacenter_id = data.vsphere_datacenter.datacenter.id
 }
 
@@ -289,22 +298,143 @@ data "vsphere_virtual_machine" "template_u20" {
 
 
 
-resource "vsphere_virtual_machine" "vm6_haproxy" {
+# resource "vsphere_virtual_machine" "vm6_haproxy" {
 
-  # do edit "depend" on to previous order vm when adding new vm
-  # depends_on = [
-  #   vsphere_virtual_machine.vm5
-  # ]
+#   # do edit "depend" on to previous order vm when adding new vm
+#   # depends_on = [
+#   #   vsphere_virtual_machine.vm5
+#   # ]
 
-  name = "Bilal-apic-haproxy-${local.last_2_octets6}"
+#   name = "Bilal-apic-haproxy-${local.last_2_octets6}"
+#   resource_pool_id = data.vsphere_compute_cluster.cluster.resource_pool_id
+#   host_system_id = data.vsphere_host.host.id
+#   datastore_id = data.vsphere_datastore.datastore.id
+
+#   memory = 6144
+#   num_cpus = 4
+#   guest_id = data.vsphere_virtual_machine.template_u20.guest_id
+#   scsi_type = data.vsphere_virtual_machine.template_u20.scsi_type
+
+#   network_interface {
+#     network_id = data.vsphere_network.network.id
+#   }
+
+#   disk {
+#     label = "disk0"
+#     size = data.vsphere_virtual_machine.template_u20.disks.0.size
+#   }
+
+#   clone {
+#     template_uuid = data.vsphere_virtual_machine.template_u20.id
+#   }
+
+#   provisioner "local-exec" {
+#     command = "ansible-playbook -i ${local.template_ub20_ip}, main.yml -e 'new_ip=${local.ip6}' -e 'old_ip=${local.template_ub20_ip}'  --ssh-extra-args '-o StrictHostKeyChecking=no'"
+#   }
+
+# }
+
+
+
+
+# resource "vsphere_virtual_machine" "vm7_powerdns" {
+
+#   # do edit "depend" on to previous order vm when adding new vm
+#   # depends_on = [
+#   #   vsphere_virtual_machine.vm5
+#   # ]
+
+#   name = "Bilal-apic-powerdns-${local.last_2_octets7}"
+#   resource_pool_id = data.vsphere_compute_cluster.cluster.resource_pool_id
+#   host_system_id = data.vsphere_host.host.id
+#   datastore_id = data.vsphere_datastore.datastore.id
+
+#   memory = 6144
+#   num_cpus = 4
+#   guest_id = data.vsphere_virtual_machine.template_u20.guest_id
+#   scsi_type = data.vsphere_virtual_machine.template_u20.scsi_type
+
+#   network_interface {
+#     network_id = data.vsphere_network.network.id
+#   }
+
+#   disk {
+#     label = "disk0"
+#     size = data.vsphere_virtual_machine.template_u20.disks.0.size
+#   }
+
+#   clone {
+#     template_uuid = data.vsphere_virtual_machine.template_u20.id
+#     # customize {
+#     #   linux_options {
+#     #     domain = "ubuntu"
+#     #     host_name = "ubuntu"
+#     #   }
+#     #   network_interface {
+#     #     ipv4_address = "172.31.29.68"
+#     #     ipv4_netmask = 24
+#     #   }
+#     # }
+#   }
+
+#   provisioner "local-exec" {
+#     command = "ansible-playbook -i ${local.template_ub20_ip}, main.yml -e 'new_ip=${local.ip7}' -e 'old_ip=${local.template_ub20_ip}'  --ssh-extra-args '-o StrictHostKeyChecking=no'"
+#   }
+
+# }
+
+
+# resource "vsphere_virtual_machine" "vm8_powerdns" {
+
+#   # do edit "depend" on to previous order vm when adding new vm
+#   # depends_on = [
+#   #   vsphere_virtual_machine.vm5
+#   # ]
+
+#   name = "Bilal-apic-powerdns-${local.last_2_octets8}"
+#   resource_pool_id = data.vsphere_compute_cluster.cluster.resource_pool_id
+#   host_system_id = data.vsphere_host.host.id
+#   datastore_id = data.vsphere_datastore.datastore.id
+
+#   memory = 6144
+#   num_cpus = 4
+#   guest_id = data.vsphere_virtual_machine.template_u20.guest_id
+#   scsi_type = data.vsphere_virtual_machine.template_u20.scsi_type
+
+#   network_interface {
+#     network_id = data.vsphere_network.network.id
+#   }
+
+#   disk {
+#     label = "disk0"
+#     size = data.vsphere_virtual_machine.template_u20.disks.0.size
+#   }
+
+#   clone {
+#     template_uuid = data.vsphere_virtual_machine.template_u20.id
+#   }
+
+#   provisioner "local-exec" {
+#     command = "ansible-playbook -i ${local.template_ub20_ip}, main.yml -e 'new_ip=${local.ip8}' -e 'old_ip=${local.template_ub20_ip}'  --ssh-extra-args '-o StrictHostKeyChecking=no'"
+#   }
+
+# }
+
+
+
+
+
+resource "vsphere_virtual_machine" "vm9_Ansible" {
+
+  name = "Bilal-Ansible-controller-${local.last_2_octets9}"
   resource_pool_id = data.vsphere_compute_cluster.cluster.resource_pool_id
   host_system_id = data.vsphere_host.host.id
   datastore_id = data.vsphere_datastore.datastore.id
 
   memory = 6144
   num_cpus = 4
-  guest_id = data.vsphere_virtual_machine.template_u20.guest_id
-  scsi_type = data.vsphere_virtual_machine.template_u20.scsi_type
+  guest_id = data.vsphere_virtual_machine.ansible-ctrl_u20.guest_id
+  scsi_type = data.vsphere_virtual_machine.ansible-ctrl_u20.scsi_type
 
   network_interface {
     network_id = data.vsphere_network.network.id
@@ -312,50 +442,11 @@ resource "vsphere_virtual_machine" "vm6_haproxy" {
 
   disk {
     label = "disk0"
-    size = data.vsphere_virtual_machine.template_u20.disks.0.size
+    size = data.vsphere_virtual_machine.ansible-ctrl_u20.disks.0.size
   }
 
   clone {
-    template_uuid = data.vsphere_virtual_machine.template_u20.id
-  }
-
-  provisioner "local-exec" {
-    command = "ansible-playbook -i ${local.template_ub20_ip}, main.yml -e 'new_ip=${local.ip6}' -e 'old_ip=${local.template_ub20_ip}'  --ssh-extra-args '-o StrictHostKeyChecking=no'"
-  }
-
-}
-
-
-
-
-resource "vsphere_virtual_machine" "vm7_powerdns" {
-
-  # do edit "depend" on to previous order vm when adding new vm
-  # depends_on = [
-  #   vsphere_virtual_machine.vm5
-  # ]
-
-  name = "Bilal-apic-powerdns-${local.last_2_octets7}"
-  resource_pool_id = data.vsphere_compute_cluster.cluster.resource_pool_id
-  host_system_id = data.vsphere_host.host.id
-  datastore_id = data.vsphere_datastore.datastore.id
-
-  memory = 6144
-  num_cpus = 4
-  guest_id = data.vsphere_virtual_machine.template_u20.guest_id
-  scsi_type = data.vsphere_virtual_machine.template_u20.scsi_type
-
-  network_interface {
-    network_id = data.vsphere_network.network.id
-  }
-
-  disk {
-    label = "disk0"
-    size = data.vsphere_virtual_machine.template_u20.disks.0.size
-  }
-
-  clone {
-    template_uuid = data.vsphere_virtual_machine.template_u20.id
+    template_uuid = data.vsphere_virtual_machine.ansible-ctrl_u20.id
     # customize {
     #   linux_options {
     #     domain = "ubuntu"
@@ -369,46 +460,19 @@ resource "vsphere_virtual_machine" "vm7_powerdns" {
   }
 
   provisioner "local-exec" {
-    command = "ansible-playbook -i ${local.template_ub20_ip}, main.yml -e 'new_ip=${local.ip7}' -e 'old_ip=${local.template_ub20_ip}'  --ssh-extra-args '-o StrictHostKeyChecking=no'"
+    command = "ansible-playbook -i ${local.template_ub20_ip}, main.yml -e 'new_ip=${local.ip9}' -e 'old_ip=${local.template_ub20_ip}'  --ssh-extra-args '-o StrictHostKeyChecking=no'"
   }
 
 }
 
 
-resource "vsphere_virtual_machine" "vm8_powerdns" {
+# data "vsphere_virtual_machine" "Ansible_node" {
+#   name          = "Bilal-Ansible-controller-29.70"
+#   datacenter_id = data.vsphere_datacenter.datacenter.id
+# }
 
-  # do edit "depend" on to previous order vm when adding new vm
-  # depends_on = [
-  #   vsphere_virtual_machine.vm5
-  # ]
-
-  name = "Bilal-apic-powerdns-${local.last_2_octets8}"
-  resource_pool_id = data.vsphere_compute_cluster.cluster.resource_pool_id
-  host_system_id = data.vsphere_host.host.id
-  datastore_id = data.vsphere_datastore.datastore.id
-
-  memory = 6144
-  num_cpus = 4
-  guest_id = data.vsphere_virtual_machine.template_u20.guest_id
-  scsi_type = data.vsphere_virtual_machine.template_u20.scsi_type
-
-  network_interface {
-    network_id = data.vsphere_network.network.id
-  }
-
-  disk {
-    label = "disk0"
-    size = data.vsphere_virtual_machine.template_u20.disks.0.size
-  }
-
-  clone {
-    template_uuid = data.vsphere_virtual_machine.template_u20.id
-  }
-
-  provisioner "local-exec" {
-    command = "ansible-playbook -i ${local.template_ub20_ip}, main.yml -e 'new_ip=${local.ip8}' -e 'old_ip=${local.template_ub20_ip}'  --ssh-extra-args '-o StrictHostKeyChecking=no'"
-  }
-
-}
+# output "Ansible_node_ip" {
+#   value = data.vsphere_virtual_machine.Ansible_node.default_ip_address
+# }
 
 
