@@ -3,5 +3,6 @@
 terraform.tfstate.backup
 terraform.tfstate
 .terraform
-ssh_keys/
+id_rsa
+keys/
 

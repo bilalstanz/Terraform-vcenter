@@ -26,14 +26,14 @@
 
           - name: "copy gitlab ssh key"
             copy:
-              src: ssh_keys/id_rsa
+              src: keys/id_rsa
               dest: ~/.ssh/id_rsa
               mode: '600'
 
           - block:
               - name: "copy ssh priv key to Ansible control node"
                 copy:
-                  src: ssh_keys/control_node
+                  src: keys/control_node
                   dest: ~/.ssh/ctrl_id
                   mode: '600'
 
@@ -51,7 +51,7 @@
               path: ~/.ssh/authorized_keys
               create: yes
               state: present
-              block: "{{ lookup('file', 'ssh_keys/control_node.pub') }}"
+              block: "{{ lookup('file', 'keys/control_node.pub') }}"
             when: ctrl_node is not defined
 
 
